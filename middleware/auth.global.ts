@@ -1,7 +1,6 @@
 import { useUserStore } from '~/stores/user';
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log('init Auth!')
   const userStore = useUserStore();
 
   if (!userStore.user) {

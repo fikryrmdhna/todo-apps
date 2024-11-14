@@ -19,6 +19,7 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     async initAuth() {
+      console.log('init Auth!')
       const router = useRouter();
       await setPersistence(auth, browserLocalPersistence);
 
