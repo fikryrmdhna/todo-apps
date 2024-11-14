@@ -3,10 +3,23 @@
         class="bg-[#ffffff] py-6 px-12 rounded-lg"
       >
         <p class="text-center mt-4 mb-8 text-3xl font-bold">TODO App</p>
-        <v-form @submit.prevent="registerUser">
+        <v-form @submit.prevent="userAuth">
           <v-row>
             <v-col cols="12">
               <v-alert v-if="userStore.error" closable :text="userStore.error" type="error" variant="tonal" density="comfortable"></v-alert>
+            </v-col>
+            <v-col v-if="type === 'Registration'" cols="12">
+              <v-text-field
+                v-model="fullName"
+                label="Full Name"
+                variant="outlined"
+                density="compact"
+                type="text"
+                hide-details
+                small
+                clearable
+                required
+              ></v-text-field>
             </v-col>
             <v-col cols="12">
               <v-text-field
@@ -65,14 +78,16 @@
   const router = useRouter();
 
   const userStore = useUserStore();
+  const fullName = ref('');
   const email = ref('');
   const password = ref('');
   const type = ref('Registration');
 
-  const isButtonLoading = computed(() => userStore.isButtonRegisterLoading);
+  const isButtonLoading = computed(() => userStore.isButtonAuthLoading);
   
-  const registerUser = async () => {
-    await userStore.register(email.value, password.value)
+  const userAuth = async () => {
+    const apiToUse = type.value === 'Registration' ? userStore.register(email.value, password.value, fullName.value) : userStore.login(email.value, password.value)
+    await apiToUse
       .then(() => {
         router.push('/todo');
       })

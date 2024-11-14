@@ -9,7 +9,7 @@
                     variant="outlined"
                     color="#fff"
                     style="text-transform: none;"
-                    @click="userStore.logout"
+                    @click="logoutApp"
                 >
                     Logout
                 </v-btn>
@@ -23,7 +23,17 @@
 
 <script setup>
 import { useUserStore } from '~/stores/user';
+import { useRouter } from 'vue-router';
+
 const userStore = useUserStore();
+const router = useRouter();
+
+const logoutApp = () => {
+    userStore.logout()
+        .then(() => {
+            router.push('/');
+        })
+}
 </script>
 
 <style src="@/assets/css/custom-vuetify.css" />

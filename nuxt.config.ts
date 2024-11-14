@@ -4,6 +4,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+  pages: true,
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -11,7 +12,6 @@ export default defineNuxtConfig({
     },
   },
 
-  // plugins: ['~/plugins/firebase.ts', '~/plugins/pinia.ts'],
 
   css: ["@/assets/css/main.css", "@/assets/css/custom-vuetify.css"],
 
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    // "@pinia/nuxt",
+    '@nuxt/eslint',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error

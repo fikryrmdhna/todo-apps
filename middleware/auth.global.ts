@@ -4,15 +4,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const userStore = useUserStore();
 
   if (!userStore.user) {
-    userStore.initAuth();
+    userStore.initAuth()
+      .then(() => {
+        if (userStore.user) {
+          navigateTo('/todo');
+        } else {
+          navigateTo('/');
+        }
+      })
     return;
-  }
-
-  if (to.path === '/' && userStore.user) {
-    return navigateTo('/todo');
-  }
-  
-  if (to.path === '/todo' && !userStore.user) {
-    return navigateTo('/');
   }
 });

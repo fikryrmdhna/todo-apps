@@ -6,12 +6,12 @@
       </v-col>
     </v-row>
   </v-container>
-  </template>
+</template>
 
 <script setup>
 import Registration from '~/components/Pages/Auth/Registration.vue';
-
+  
 definePageMeta({
-    layout: 'auth'
+  layout: 'auth'
 })
 </script>

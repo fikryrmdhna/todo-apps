@@ -12,44 +12,47 @@ import {
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    isLayoutLoading: true,
-    isButtonRegisterLoading: false,
+    isButtonAuthLoading: false,
     user: null,
     error: null,
   }),
   actions: {
     async initAuth() {
-      console.log('init Auth!')
-      const router = useRouter();
-      await setPersistence(auth, browserLocalPersistence);
-
-      onAuthStateChanged(auth, (user) => {
-        console.log('listen: ', user)
-        if (user) {
-          this.user = user;
-          this.isLayoutLoading = false;
-        } else {
-          this.user = null;
-          this.isLayoutLoading = false;
+      return new Promise(async (resolve, reject) => {
+        try {
+          await setPersistence(auth, browserLocalPersistence);
+    
+          onAuthStateChanged(auth, (user) => {
+            if (user) {
+              this.user = user;
+            } else {
+              this.user = null;
+            }
+          });
+          resolve()
+        } catch (error) {
+          reject(error)
+          throw new Error("Error initializing authentication.", error);
+          
         }
-      });
+      })
     },
-    async register(email, password) {
-      this.isButtonRegisterLoading = true;
+    async register(email, password, fullName) {
+      this.isButtonAuthLoading = true;
       return new Promise(async (resolve, reject) => {
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          console.log('userCredential: ', userCredential)
+
           await setDoc(doc(db, "users", userCredential.user.uid), {
             email,
+            fullName,
             id: userCredential.user.uid,
           });
           this.user = userCredential.user;
           resolve()
         } catch (error) {
           let errorMessage;
-          console.log('error: ', error.code)
-  
+
           switch (error.code) {
             case "auth/invalid-email":
               errorMessage = "Please enter a valid email.";
@@ -63,25 +66,66 @@ export const useUserStore = defineStore('user', {
             default:
               errorMessage = "An error occurred. Please try again.";
           }
-  
+
           this.error = errorMessage;
           reject(error)
         } finally {
-          this.isButtonRegisterLoading = false;
+          this.isButtonAuthLoading = false;
         }
       })
     },
     async login(email, password) {
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        this.user = userCredential.user;
-      } catch (error) {
-        this.error = error.message;
-      }
-    },
+      this.isButtonAuthLoading = true;
+      return new Promise(async (resolve, reject) => {
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          this.user = userCredential.user;
+          this.error = null;
+          resolve()
+        } catch (error) {
+          switch (error.code) {
+            case 'auth/user-not-found':
+              this.error = 'No user found with this email.';
+              break;
+            case 'auth/wrong-password':
+              this.error = 'Incorrect password. Please try again.';
+              break;
+            case 'auth/missing-password':
+              this.error = 'Please fill password.';
+              break;
+            case 'auth/too-many-requests':
+              this.error = 'Too many unsuccessful login attempts. Please try again later.';
+              break;
+            case 'auth/invalid-email':
+              this.error = 'The email address is not valid.';
+              break;
+            case 'auth/missing-email':
+              this.error = 'Please fill an email.';
+              break;
+            case 'auth/invalid-credential':
+              this.error = 'Account not found.';
+              break;
+            default:
+              this.error = 'Login failed. Please try again later.';
+          }
+          console.error('Login error:', error);
+          reject(error)
+        } finally {
+          this.isButtonAuthLoading = false;
+        }
+      })
+    },    
     async logout() {
-      await signOut(auth);
-      this.user = null;
+      return new Promise(async (resolve, reject) => {
+        try {
+          await signOut(auth);
+          this.user = null;
+          resolve()
+        } catch (error) {
+          this.error = errorMessage;
+          reject(error)
+        }
+      })
     },
   },
 });
