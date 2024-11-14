@@ -1,10 +1,51 @@
-# Nuxt Minimal Starter
+# TODO App
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Setup
+This is a simple and intuitive TODO app built with Nuxt 3, designed for ease of use with Firebase integration for authentication and database management. The app also leverages Pinia as its state management library, Vuetify for UI components, and Tailwind CSS for styling.
+
+
+## Tech Stack
+
+
+-   Nuxt 3 - Server-side rendering and routing.
+-   Pinia - State management.
+-   Vuetify - UI components and layout.
+-   Tailwind CSS - Custom styling.
+-   Firebase - Used for authentication and as the database.
+
+
+## Features
+
+
+-   User authentication (register and login).
+-   CRUD operations for TODO items.
+-   Real-time updates and a clean, responsive UI.
+
+
+## Prerequisites
+
+
+-   Node.js (version 20.17.0 recommended)
+-   Docker (if running with Docker)
+-   Firebase Project: Set up your Firebase project and add your Firebase configuration.
+
+
+## Installation
+
+
+Clone this repository:
+
+
+
+```bash
+git clone https://github.com/fikryrmdhna/todo-apps.git
+cd todo-apps
+```
+
 
 Make sure to install dependencies:
+
+
 
 ```bash
 # npm
@@ -20,56 +61,47 @@ yarn install
 bun install
 ```
 
-## Development Server
 
-Start the development server on `http://localhost:3000`:
+## Running the App Locally
+
+
+Start the app in development mode:
+
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
 
-Build the application for production:
+Navigate to http://localhost:3000 to access the app.
+
+## Running the App with Docker
+
+
+Build the Docker image:
+
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+docker build -t todo-app .
 ```
 
-Locally preview production build:
+
+## Run the Docker container:
+
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+docker run -d -p 3000:3000 todo-app
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+Access the app at http://localhost:3000.
+
+## Project Structure
+-   /components - Vue components used throughout the app.
+-   /layouts - Separate layout for auth and todo
+-   /lib - Firebase configuration
+-   /middleware - Route middleware for authentication.
+-   /pages - App pages for each route.
+-   /plugins - Nuxt plugins (e.g., Pinia, Vuetify).
+-   /store - Pinia stores for state management.
+-   Dockerfile - Docker configuration.
