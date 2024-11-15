@@ -65,6 +65,9 @@ bun install
 ## Running the App Locally
 
 
+### *No need .env file
+
+
 Start the app in development mode:
 
 
