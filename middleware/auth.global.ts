@@ -1,17 +1,17 @@
-import { useUserStore } from '~/stores/user';
+/* eslint-disable no-undef */
+import { useUserStore } from '~/stores/user'
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  const userStore = useUserStore();
+  const userStore = useUserStore()
 
   if (!userStore.user) {
     userStore.initAuth()
       .then(() => {
         if (userStore.user) {
-          navigateTo('/todo');
+          navigateTo('/todo')
         } else {
-          navigateTo('/');
+          navigateTo('/')
         }
       })
-    return;
   }
-});
+})

@@ -1,9 +1,10 @@
-import axios from "axios"
+import axios from 'axios'
 
-export default defineNuxtPlugin(async () => {
-    return {
-        provide: {
-            axios: axios
-        }
+// eslint-disable-next-line no-undef
+export default defineNuxtPlugin(() => {
+  return {
+    provide: {
+      axios
     }
+  }
 })

@@ -52,7 +52,7 @@
               </v-row>
             </form>
           </v-container>
-          <template v-slot:actions>
+          <template #actions>
             <v-btn
               class="mx-1"
               text="Save"
@@ -80,15 +80,15 @@
           <template v-if="todoStore.todos.length !== 0">
             <li v-for="todo in todoStore.todos" :key="todo.id">
               <v-card
-                  class="bg-[#ffffff] my-6 rounded-lg py-4 px-6"
-                  :disabled="loadingMap[todo.id]"
-                  :loading="loadingMap[todo.id]"
+                class="bg-[#ffffff] my-6 rounded-lg py-4 px-6"
+                :disabled="loadingMap[todo.id]"
+                :loading="loadingMap[todo.id]"
               >
                 <div class="flex justify-between align-center mb-6">
                   <div class="font-sm font-semibold text-[#cb4645]">
                     {{ todo.activitiesNo }}
                   </div>
-    
+
                   <div>
                     <v-btn
                       prepend-icon="mdi-pencil-outline"
@@ -117,64 +117,70 @@
                     </v-btn>
                   </div>
                 </div>
-    
-                <div class="text-xl font-bold text-[#212121]">{{ todo.subject }}</div>
-                <div class="text-md font-medium text-slate-600">{{ todo.description }}</div>
+
+                <div class="text-xl font-bold text-[#212121]">
+                  {{ todo.subject }}
+                </div>
+                <div class="text-md font-medium text-slate-600">
+                  {{ todo.description }}
+                </div>
                 <div class="text-end mt-4">
                   <v-btn
-                      prepend-icon="mdi-check"
-                      elevation="0"
-                      color="success"
-                      :variant="todo.status === 'Done' ? 'flat' : 'plain'"
-                      size="small"
-                      style="text-transform: none;"
-                      @click="toggleStatus(todo, 'Done')"
-                    >
-                      Done
-                    </v-btn>
-                    <v-btn
-                      prepend-icon="mdi-close"
-                      elevation="0"
-                      color="#cb4645"
-                      :variant="todo.status === 'Cancelled' ? 'flat' : 'plain'"
-                      size="small"
-                      style="text-transform: none;"
-                      @click="toggleStatus(todo, 'Cancelled')"
-                    >
-                      Cancelled
-                    </v-btn>
+                    prepend-icon="mdi-check"
+                    elevation="0"
+                    color="success"
+                    :variant="todo.status === 'Done' ? 'flat' : 'plain'"
+                    size="small"
+                    style="text-transform: none;"
+                    @click="toggleStatus(todo, 'Done')"
+                  >
+                    Done
+                  </v-btn>
+                  <v-btn
+                    prepend-icon="mdi-close"
+                    elevation="0"
+                    color="#cb4645"
+                    :variant="todo.status === 'Cancelled' ? 'flat' : 'plain'"
+                    size="small"
+                    style="text-transform: none;"
+                    @click="toggleStatus(todo, 'Cancelled')"
+                  >
+                    Cancelled
+                  </v-btn>
                 </div>
               </v-card>
             </li>
           </template>
           <template v-else>
-            <li class="text-center text-2xl font-bold text-[#ffffff]">No activity has been created.</li>
+            <li class="text-center text-2xl font-bold text-[#ffffff]">
+              No activity has been created.
+            </li>
           </template>
         </ul>
       </v-col>
     </v-row>
   </v-container>
 </template>
-  
-<script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useTodoStore } from '~/stores/todo';
-import { useUserStore } from '~/stores/user';
 
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useTodoStore } from '~/stores/todo'
+import { useUserStore } from '~/stores/user'
+
+// eslint-disable-next-line no-undef
 definePageMeta({
   layout: 'default'
 })
 
-const todoStore = useTodoStore();
-const userStore = useUserStore();
-const todos = ref([]);
-const dialog = ref(false);
-const dialogType = ref('');
-const selectedTodo = ref({});
-const subject = ref('');
-const description = ref('');
-const isSaveButtonLoading = ref(false);
-const loadingMap = ref({});
+const todoStore = useTodoStore()
+const userStore = useUserStore()
+const dialog = ref(false)
+const dialogType = ref('')
+const selectedTodo = ref({})
+const subject = ref('')
+const description = ref('')
+const isSaveButtonLoading = ref(false)
+const loadingMap = ref({})
 
 watch(userStore, (newState) => {
   if (newState.user) {
@@ -194,15 +200,15 @@ const addNewTodo = async () => {
       description.value = ''
       dialogType.value = ''
     })
-};
+}
 
 const editActivity = (todo) => {
-  dialog.value = true;
-  dialogType.value = 'edit';
-  selectedTodo.value = todo;
-  subject.value = todo.subject;
-  description.value = todo.description;
-};
+  dialog.value = true
+  dialogType.value = 'edit'
+  selectedTodo.value = todo
+  subject.value = todo.subject
+  description.value = todo.description
+}
 
 const saveEdit = async (todoId) => {
   isSaveButtonLoading.value = true
@@ -215,33 +221,30 @@ const saveEdit = async (todoId) => {
       description.value = ''
       dialogType.value = ''
       selectedTodo.value = {}
-      
     })
-  
-};
+}
 
 const toggleStatus = async (todo, newStatus) => {
-  loadingMap.value[todo.id] = true;
+  loadingMap.value[todo.id] = true
   await todoStore.updateTodoDetails(userStore.user.uid, todo.id, { subject: todo.subject, description: todo.description, status: todo.status }, newStatus)
     .then(async () => {
-      loadingMap.value[todo.id] = false;
+      loadingMap.value[todo.id] = false
       await todoStore.fetchTodos(userStore.user.uid)
     })
-};
+}
 
 const deleteActivity = async (todo) => {
-  loadingMap.value[todo.id] = true;
+  loadingMap.value[todo.id] = true
   await todoStore.deleteTodo(userStore.user.uid, todo.id)
     .then(async () => {
-      loadingMap.value[todo.id] = false;
+      loadingMap.value[todo.id] = false
       await todoStore.fetchTodos(userStore.user.uid)
     })
-};
+}
 
 onMounted(async () => {
   if (userStore.user) {
-    todoStore.fetchTodos(userStore.user.uid)
+    await todoStore.fetchTodos(userStore.user.uid)
   }
-});
+})
 </script>
-  

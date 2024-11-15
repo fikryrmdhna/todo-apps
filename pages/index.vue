@@ -9,8 +9,9 @@
 </template>
 
 <script setup>
-import Registration from '~/components/Pages/Auth/Registration.vue';
-  
+import Registration from '~/components/Pages/Auth/Registration.vue'
+
+// eslint-disable-next-line no-undef
 definePageMeta({
   layout: 'auth'
 })
